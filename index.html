@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CinemaCrusade Bot — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --bg2: #0d1220;
+  --bg3: #111827;
+  --card: #131c2e;
+  --border: #1e2d47;
+  --accent: #3b82f6;
+  --accent2: #8b5cf6;
+  --accent3: #06b6d4;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --orange: #f97316;
+  --pink: #ec4899;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --dim: #334155;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 20%, rgba(59,130,246,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(139,92,246,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(6,182,212,0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════ */
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  background: var(--bg);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+#loginScreen.hiding {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 440px;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.login-logo .icon {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 16px;
+  box-shadow: 0 0 40px rgba(59,130,246,0.3);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 40px rgba(59,130,246,0.3); }
+  50% { box-shadow: 0 0 60px rgba(59,130,246,0.5), 0 0 100px rgba(139,92,246,0.2); }
+}
+
+.login-logo h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.login-logo p {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.login-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+}
+
+.login-box h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.login-box p.sub {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-bottom: 28px;
+}
+
+.field-group {
+  margin-bottom: 18px;
+}
+
+.field-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.field-group input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+.login-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.03em;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+}
+
+.login-btn:active { transform: translateY(0); }
+
+.login-error {
+  display: none;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fca5a5;
+  font-size: 0.83rem;
+  margin-top: 14px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.login-hint {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ══════════════════════════════
+   MAIN PANEL
+══════════════════════════════ */
+#mainPanel {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* TOPBAR */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(8,12,20,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-logo {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.topbar-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.topbar-subtitle {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-badge {
+  background: rgba(59,130,246,0.15);
+  border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  color: #93c5fd;
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px var(--green);
+}
+
+.logout-btn {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: #fca5a5;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.logout-btn:hover { background: rgba(239,68,68,0.2); }
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 64px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-section {
+  margin-bottom: 28px;
+}
+
+.sidebar-section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  padding: 0 10px;
+  margin-bottom: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  user-select: none;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: rgba(59,130,246,0.12);
+  color: #93c5fd;
+}
+
+.nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+.nav-count {
+  margin-left: auto;
+  background: var(--dim);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+}
+
+/* MAIN CONTENT */
+.content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+/* SEARCH BAR */
+.search-wrap {
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px 13px 44px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+.search-input::placeholder { color: var(--muted); }
+
+/* PAGE SECTIONS */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.section-header p {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: 3px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* CMD GRID */
+.cmd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+/* CMD CARD */
+.cmd-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.cmd-card:hover {
+  border-color: rgba(59,130,246,0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.cmd-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+
+.cmd-card.cat-mod::before { background: var(--red); }
+.cmd-card.cat-automod::before { background: var(--orange); }
+.cmd-card.cat-level::before { background: var(--accent2); }
+.cmd-card.cat-eco::before { background: var(--gold); }
+.cmd-card.cat-gamble::before { background: var(--green); }
+.cmd-card.cat-cinema::before { background: var(--accent3); }
+.cmd-card.cat-admin::before { background: var(--accent); }
+
+.cmd-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cmd-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.cmd-args {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: #f9a8d4;
+}
+
+.cmd-perm {
+  margin-left: auto;
+  font-size: 0.68rem;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+.perm-admin { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+.perm-mod { background: rgba(249,115,22,0.15); color: #fdba74; border: 1px solid rgba(249,115,22,0.2); }
+.perm-mgr { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.2); }
+.perm-all { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.2); }
+
+.cmd-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.cmd-example {
+  margin-top: 8px;
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent3);
+  border: 1px solid var(--border);
+}
+
+/* CATEGORY HEADER */
+.cat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 32px 0 16px;
+}
+
+.cat-header:first-child { margin-top: 0; }
+
+.cat-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cat-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.cat-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2px 10px;
+}
+
+/* OVERVIEW STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: attr(data-icon);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  opacity: 0.08;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* QUICK REF TABLE */
+.quick-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+.quick-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.quick-table th:first-child { border-radius: 8px 0 0 0; }
+.quick-table th:last-child { border-radius: 0 8px 0 0; }
+
+.quick-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(30,45,71,0.5);
+  vertical-align: top;
+}
+
+.quick-table tr:last-child td { border-bottom: none; }
+.quick-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.quick-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  color: #60a5fa;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.quick-table td:nth-child(2) {
+  font-family: 'JetBrains Mono', monospace;
+  color: #f9a8d4;
+  font-size: 0.78rem;
+}
+
+.quick-table td:nth-child(3) { color: var(--muted); }
+
+.table-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* CREDENTIALS PAGE */
+.creds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.cred-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.cred-card:hover { border-color: rgba(139,92,246,0.4); }
+
+.cred-role {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+}
+
+.cred-username {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c4b5fd;
+  margin-bottom: 4px;
+}
+
+.cred-pass {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--gold);
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 6px;
+  padding: 5px 10px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.cred-access {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cred-tag {
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(59,130,246,0.1);
+  color: #93c5fd;
+  border: 1px solid rgba(59,130,246,0.15);
+}
+
+/* NO RESULTS */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  display: none;
+}
+
+/* SETUP PAGE */
+.setup-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.step-num {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.step-content h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.step-content p {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent3);
+  margin-top: 10px;
+  overflow-x: auto;
+  line-height: 1.7;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
+
+/* ANIMATIONS */
+.cmd-card {
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-box {
+  animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .content { padding: 20px 16px; }
+  .topbar { padding: 0 16px; }
+}
+
+@media (max-width: 600px) {
+  .cmd-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .creds-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="login-logo">
+      <div class="icon">🎬</div>
+      <h1>CinemaCrusade Bot</h1>
+      <p>// Admin Control Panel v2.0</p>
+    </div>
+    <div class="login-box">
+      <h2>Restricted Access</h2>
+      <p class="sub">Authorized personnel only. Enter admin credentials to continue.</p>
+      <div class="field-group">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="admin_username" autocomplete="off" />
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••••" />
+      </div>
+      <button class="login-btn" onclick="doLogin()">ACCESS PANEL →</button>
+      <div class="login-error" id="loginError">⚠ Invalid credentials. Access denied.</div>
+      <div class="login-hint">
+        Press <strong style="color:#60a5fa">Enter</strong> to submit<br>
+        Contact server owner for credentials
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MAIN PANEL
+══════════════════════════════ -->
+<div id="mainPanel">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">🎬</div>
+      <div>
+        <div class="topbar-title">CinemaCrusade Bot</div>
+        <div class="topbar-subtitle">Admin Control Panel</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="admin-badge" id="adminBadge">admin_user</div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Navigation</div>
+        <div class="nav-item active" onclick="showPage('overview', this)">
+          <span class="nav-icon">🏠</span> Overview
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this)">
+          <span class="nav-icon">📋</span> All Commands <span class="nav-count">75+</span>
+        </div>
+        <div class="nav-item" onclick="showPage('credentials', this)">
+          <span class="nav-icon">🔑</span> Credentials
+        </div>
+        <div class="nav-item" onclick="showPage('setup', this)">
+          <span class="nav-icon">⚙️</span> Setup Guide
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Command Categories</div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('mod')">
+          <span class="nav-icon">⚔️</span> Moderation <span class="nav-count">14</span>
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('automod')">
+          <span class="nav-icon">🤖</span> Automod <span class="nav-count">7</span>
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('level')">
+          <span class="nav-icon">📊</span> Leveling <span class="nav-count">10</span>
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('eco')">
+          <span class="nav-icon">💰</span> Economy <span class="nav-count">19</span>
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('gamble')">
+          <span class="nav-icon">🎰</span> Gambling <span class="nav-count">12</span>
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('cinema')">
+          <span class="nav-icon">🎬</span> Cinema <span class="nav-count">10</span>
+        </div>
+        <div class="nav-item" onclick="showPage('commands', this); filterCat('admin')">
+          <span class="nav-icon">🛡️</span> Admin <span class="nav-count">20</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <!-- SEARCH -->
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchBox" placeholder="Search commands, descriptions, usage..." oninput="doSearch()" />
+      </div>
+
+      <!-- ── OVERVIEW PAGE ── -->
+      <div class="page-section active" id="page-overview">
+        <div class="section-header">
+          <div>
+            <h2>Dashboard Overview</h2>
+            <p>// CinemaCrusade Bot — All-in-One Discord Solution</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" data-icon="📋">
+            <div class="stat-number" style="color:#60a5fa">75+</div>
+            <div class="stat-label">Total Commands</div>
+          </div>
+          <div class="stat-card" data-icon="⚙️">
+            <div class="stat-number" style="color:#c4b5fd">6</div>
+            <div class="stat-label">Modules</div>
+          </div>
+          <div class="stat-card" data-icon="🗄️">
+            <div class="stat-number" style="color:#6ee7b7">25+</div>
+            <div class="stat-label">DB Tables</div>
+          </div>
+          <div class="stat-card" data-icon="🔑">
+            <div class="stat-number" style="color:#fbbf24">10</div>
+            <div class="stat-label">Admin Accounts</div>
+          </div>
+          <div class="stat-card" data-icon="🎬">
+            <div class="stat-number" style="color:#22d3ee">✓</div>
+            <div class="stat-label">TMDB Integration</div>
+          </div>
+          <div class="stat-card" data-icon="🤖">
+            <div class="stat-number" style="color:#fb923c">7</div>
+            <div class="stat-label">Automod Filters</div>
+          </div>
+        </div>
+
+        <div class="cat-header">
+          <span class="cat-title">Quick Command Reference</span>
+          <div class="cat-line"></div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="quick-table">
+            <thead>
+              <tr><th>Command</th><th>Usage</th><th>Description</th><th>Permission</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>-kick</td><td>@user [reason]</td><td>Kicks user from server</td><td><span class="cmd-perm perm-mod">Mod</span></td></tr>
+              <tr><td>-ban</td><td>@user [reason]</td><td>Permanently bans user</td><td><span class="cmd-perm perm-mod">Mod</span></td></tr>
+              <tr><td>-warn</td><td>@user [reason]</td><td>Issues warning (3=mute, 5=kick)</td><td><span class="cmd-perm perm-mod">Mod</span></td></tr>
+              <tr><td>-level</td><td>[@user]</td><td>Shows level, XP, progress bar</td><td><span class="cmd-perm perm-all">All</span></td></tr>
+              <tr><td>-balance</td><td>[@user]</td><td>Shows wallet, bank, net worth</td><td><span class="cmd-perm perm-all">All</span></td></tr>
+              <tr><td>-daily</td><td>—</td><td>Claim 500 coins (24h cooldown)</td><td><span class="cmd-perm perm-all">All</span></td></tr>
+              <tr><td>-slots</td><td>&lt;bet&gt;</td><td>Slot machine — up to 50x win</td><td><span class="cmd-perm perm-all">All</span></td></tr>
+              <tr><td>-blackjack</td><td>&lt;bet&gt;</td><td>Interactive blackjack vs bot</td><td><span class="cmd-perm perm-all">All</span></td></tr>
+              <tr><td>-movie</td><td>&lt;title&gt;</td><td>Look up movie info via TMDB</td><td><span class="cmd-perm perm-all">All</span></td></tr>
+              <tr><td>-togglemodule</td><td>&lt;module&gt;</td><td>Enable/disable bot modules</td><td><span class="cmd-perm perm-mgr">Manager</span></td></tr>
+              <tr><td>-setbotmanager</td><td>@role</td><td>Set bot manager role</td><td><span class="cmd-perm perm-admin">Admin</span></td></tr>
+              <tr><td>-admingive</td><td>@user &lt;amt&gt;</td><td>Give coins to user</td><td><span class="cmd-perm perm-mgr">Manager</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cat-header">
+          <span class="cat-title">Module Status</span>
+          <div class="cat-line"></div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" style="border-color:rgba(16,185,129,0.3)" data-icon="⚔️">
+            <div class="stat-number" style="color:var(--green);font-size:1.1rem">ACTIVE</div>
+            <div class="stat-label">Moderation Module</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(16,185,129,0.3)" data-icon="📊">
+            <div class="stat-number" style="color:var(--green);font-size:1.1rem">ACTIVE</div>
+            <div class="stat-label">Leveling Module</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(16,185,129,0.3)" data-icon="💰">
+            <div class="stat-number" style="color:var(--green);font-size:1.1rem">ACTIVE</div>
+            <div class="stat-label">Economy Module</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(16,185,129,0.3)" data-icon="🎰">
+            <div class="stat-number" style="color:var(--green);font-size:1.1rem">ACTIVE</div>
+            <div class="stat-label">Casino Module</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(16,185,129,0.3)" data-icon="🎬">
+            <div class="stat-number" style="color:var(--green);font-size:1.1rem">ACTIVE</div>
+            <div class="stat-label">Cinema Module</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(16,185,129,0.3)" data-icon="🤖">
+            <div class="stat-number" style="color:var(--green);font-size:1.1rem">ACTIVE</div>
+            <div class="stat-label">Automod Module</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMMANDS PAGE ── -->
+      <div class="page-section" id="page-commands">
+        <div class="section-header">
+          <div>
+            <h2>All Commands</h2>
+            <p>// Use prefix <span style="color:#60a5fa;font-family:'JetBrains Mono',monospace">-</span> before every command</p>
+          </div>
+        </div>
+
+        <div id="noResults" class="no-results">😶 No commands match your search.</div>
+
+        <!-- MODERATION -->
+        <div class="cat-header" data-cat="mod">
+          <span class="cat-title">⚔️ Moderation</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">14 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-mod">
+          <div class="cmd-card cat-mod" data-tags="kick remove user mod">
+            <div class="cmd-top"><span class="cmd-name">-kick</span><span class="cmd-args">@user [reason]</span><span class="cmd-perm perm-mod">Kick Perm</span></div>
+            <div class="cmd-desc">Removes a user from the server. They can rejoin unless banned. The action is logged automatically.</div>
+            <div class="cmd-example">-kick @BadUser Spamming in chat</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="ban permanent block mod">
+            <div class="cmd-top"><span class="cmd-name">-ban</span><span class="cmd-args">@user [reason]</span><span class="cmd-perm perm-mod">Ban Perm</span></div>
+            <div class="cmd-desc">Permanently bans a user from the server. They cannot rejoin without being manually unbanned.</div>
+            <div class="cmd-example">-ban @ToxicUser Breaking server rules</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="tempban temp time hours ban mod">
+            <div class="cmd-top"><span class="cmd-name">-tempban</span><span class="cmd-args">@user &lt;hours&gt; [reason]</span><span class="cmd-perm perm-mod">Ban Perm</span></div>
+            <div class="cmd-desc">Bans a user for a specific number of hours. The bot automatically unbans them when the time expires.</div>
+            <div class="cmd-example">-tempban @User 24 Cooling off period</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="unban remove id mod">
+            <div class="cmd-top"><span class="cmd-name">-unban</span><span class="cmd-args">&lt;user_id&gt; [reason]</span><span class="cmd-perm perm-mod">Ban Perm</span></div>
+            <div class="cmd-desc">Unbans a user by their Discord ID. Right-click on a user → Copy ID to get their ID number.</div>
+            <div class="cmd-example">-unban 123456789012345678</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="timeout mute silence minutes mod">
+            <div class="cmd-top"><span class="cmd-name">-timeout</span><span class="cmd-args">@user &lt;minutes&gt; [reason]</span><span class="cmd-perm perm-mod">Mod Perm</span></div>
+            <div class="cmd-desc">Prevents a user from sending messages or joining voice for a set time using Discord's native timeout system.</div>
+            <div class="cmd-example">-timeout @User 60 Argument in chat</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="untimeout unmute remove mod">
+            <div class="cmd-top"><span class="cmd-name">-untimeout</span><span class="cmd-args">@user</span><span class="cmd-perm perm-mod">Mod Perm</span></div>
+            <div class="cmd-desc">Immediately removes an active timeout from a user before it expires naturally.</div>
+            <div class="cmd-example">-untimeout @User</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="warn warning issue auto mod">
+            <div class="cmd-top"><span class="cmd-name">-warn</span><span class="cmd-args">@user [reason]</span><span class="cmd-perm perm-mod">Mod Perm</span></div>
+            <div class="cmd-desc">Issues a formal warning. Auto-escalates: 3 warnings → mute 1hr, 5 warnings → auto-kick.</div>
+            <div class="cmd-example">-warn @User Using inappropriate language</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="warnings list view history mod">
+            <div class="cmd-top"><span class="cmd-name">-warnings</span><span class="cmd-args">@user</span><span class="cmd-perm perm-mod">Mod Perm</span></div>
+            <div class="cmd-desc">Displays all active warnings for a user with reasons and timestamps shown as relative times.</div>
+            <div class="cmd-example">-warnings @User</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="clearwarnings clear reset pardon mod">
+            <div class="cmd-top"><span class="cmd-name">-clearwarnings</span><span class="cmd-args">@user</span><span class="cmd-perm perm-mod">Mod Perm</span></div>
+            <div class="cmd-desc">Clears all active warnings for a user — effectively pardoning their record.</div>
+            <div class="cmd-example">-clearwarnings @User</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="purge delete bulk messages clean mod">
+            <div class="cmd-top"><span class="cmd-name">-purge</span><span class="cmd-args">&lt;amount&gt; [@user]</span><span class="cmd-perm perm-mod">Manage Msgs</span></div>
+            <div class="cmd-desc">Bulk deletes messages. Optionally filter to only delete messages from a specific user.</div>
+            <div class="cmd-example">-purge 50 @SpamUser</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="lock channel prevent lockdown mod">
+            <div class="cmd-top"><span class="cmd-name">-lock</span><span class="cmd-args">[#channel]</span><span class="cmd-perm perm-mod">Manage Chan</span></div>
+            <div class="cmd-desc">Prevents @everyone from sending messages in the channel. Useful for server lockdowns.</div>
+            <div class="cmd-example">-lock #general</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="unlock channel open mod">
+            <div class="cmd-top"><span class="cmd-name">-unlock</span><span class="cmd-args">[#channel]</span><span class="cmd-perm perm-mod">Manage Chan</span></div>
+            <div class="cmd-desc">Re-opens a locked channel, restoring message permissions for @everyone.</div>
+            <div class="cmd-example">-unlock #general</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="slowmode delay rate limit seconds mod">
+            <div class="cmd-top"><span class="cmd-name">-slowmode</span><span class="cmd-args">&lt;seconds&gt;</span><span class="cmd-perm perm-mod">Manage Chan</span></div>
+            <div class="cmd-desc">Sets a per-user message rate limit. Use 0 to disable. Helps during heated discussions.</div>
+            <div class="cmd-example">-slowmode 10</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="purgebots bot clean delete mod">
+            <div class="cmd-top"><span class="cmd-name">-purgebots</span><span class="cmd-args">—</span><span class="cmd-perm perm-mod">Manage Msgs</span></div>
+            <div class="cmd-desc">Deletes up to 100 bot messages from the current channel in one sweep.</div>
+            <div class="cmd-example">-purgebots</div>
+          </div>
+        </div>
+
+        <!-- SERVER SETUP -->
+        <div class="cat-header" data-cat="mod">
+          <span class="cat-title">🏠 Server Setup</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">8 commands</span>
+        </div>
+        <div class="cmd-grid">
+          <div class="cmd-card cat-mod" data-tags="setwelcome welcome message channel setup mod">
+            <div class="cmd-top"><span class="cmd-name">-setwelcome</span><span class="cmd-args">#channel &lt;message&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets welcome message for new members. Use {user} for mention and {server} for server name.</div>
+            <div class="cmd-example">-setwelcome #welcome Welcome {user} to {server}!</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="setgoodbye goodbye leave message setup mod">
+            <div class="cmd-top"><span class="cmd-name">-setgoodbye</span><span class="cmd-args">#channel &lt;message&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets goodbye message for when members leave. Same placeholders as welcome.</div>
+            <div class="cmd-example">-setgoodbye #general Goodbye {user}!</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="setautorole auto role join setup mod">
+            <div class="cmd-top"><span class="cmd-name">-setautorole</span><span class="cmd-args">@role</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Automatically assigns a role to every new member who joins the server.</div>
+            <div class="cmd-example">-setautorole @Member</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="reactionrole reaction role emoji message setup mod">
+            <div class="cmd-top"><span class="cmd-name">-reactionrole</span><span class="cmd-args">&lt;msg_id&gt; &lt;emoji&gt; @role</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Creates a reaction role: users react with the emoji to get the role, remove reaction to lose it.</div>
+            <div class="cmd-example">-reactionrole 123456789 🎬 @MovieFan</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="sticky message pin bottom channel mod">
+            <div class="cmd-top"><span class="cmd-name">-sticky</span><span class="cmd-args">&lt;message&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Posts a sticky message that automatically reappears at the bottom of the channel after each new message.</div>
+            <div class="cmd-example">-sticky 📌 Please read #rules before chatting!</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="unsticky remove pin channel mod">
+            <div class="cmd-top"><span class="cmd-name">-unsticky</span><span class="cmd-args">—</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Removes the active sticky message from the current channel.</div>
+            <div class="cmd-example">-unsticky</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="serverinfo info stats members mod">
+            <div class="cmd-top"><span class="cmd-name">-serverinfo</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Displays server creation date, member count, boost level, channel count, and role count.</div>
+            <div class="cmd-example">-serverinfo</div>
+          </div>
+          <div class="cmd-card cat-mod" data-tags="userinfo user info profile roles mod">
+            <div class="cmd-top"><span class="cmd-name">-userinfo</span><span class="cmd-args">[@user]</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Shows a user's Discord ID, join date, account creation date, and current roles.</div>
+            <div class="cmd-example">-userinfo @SomeUser</div>
+          </div>
+        </div>
+
+        <!-- AUTOMOD -->
+        <div class="cat-header" data-cat="automod">
+          <span class="cat-title">🤖 Automod</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">7 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-automod">
+          <div class="cmd-card cat-automod" data-tags="addprofanity profanity word filter blacklist automod">
+            <div class="cmd-top"><span class="cmd-name">-addprofanity</span><span class="cmd-args">&lt;word&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Adds a word to the profanity blacklist. Messages containing it are auto-deleted and the user earns violation points.</div>
+            <div class="cmd-example">-addprofanity badword</div>
+          </div>
+          <div class="cmd-card cat-automod" data-tags="addregex regex pattern advanced filter automod">
+            <div class="cmd-top"><span class="cmd-name">-addregex</span><span class="cmd-args">&lt;pattern&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Adds a regular expression pattern for advanced filtering — catches bypasses like spaced-out words.</div>
+            <div class="cmd-example">-addregex b[\W]*a[\W]*d</div>
+          </div>
+          <div class="cmd-card cat-automod" data-tags="blockdomain domain block link automod">
+            <div class="cmd-top"><span class="cmd-name">-blockdomain</span><span class="cmd-args">&lt;domain.com&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Blocks all links from a specified domain. Any message posting them is auto-deleted.</div>
+            <div class="cmd-example">-blockdomain sketchy-site.com</div>
+          </div>
+          <div class="cmd-card cat-automod" data-tags="allowdomain domain allow whitelist link automod">
+            <div class="cmd-top"><span class="cmd-name">-allowdomain</span><span class="cmd-args">&lt;domain.com&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Whitelists a domain so its links are never blocked. Used alongside link filtering mode.</div>
+            <div class="cmd-example">-allowdomain youtube.com</div>
+          </div>
+          <div class="cmd-card cat-automod" data-tags="setautomodthreshold threshold points action mute kick ban automod">
+            <div class="cmd-top"><span class="cmd-name">-setautomodthreshold</span><span class="cmd-args">&lt;points&gt; &lt;action&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets auto-punishment when a user reaches X violation points. Actions: mute, kick, or ban.</div>
+            <div class="cmd-example">-setautomodthreshold 5 mute</div>
+          </div>
+          <div class="cmd-card cat-automod" data-tags="addcmd custom command trigger response automod">
+            <div class="cmd-top"><span class="cmd-name">-addcmd</span><span class="cmd-args">&lt;trigger&gt; &lt;response&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Creates a custom auto-response command. When anyone types the trigger, the bot replies with the response.</div>
+            <div class="cmd-example">-addcmd !discord Join at discord.gg/example</div>
+          </div>
+          <div class="cmd-card cat-automod" data-tags="delcmd delete custom command remove automod">
+            <div class="cmd-top"><span class="cmd-name">-delcmd</span><span class="cmd-args">&lt;trigger&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Removes a custom command by its trigger word.</div>
+            <div class="cmd-example">-delcmd !discord</div>
+          </div>
+        </div>
+
+        <!-- LEVELING -->
+        <div class="cat-header" data-cat="level">
+          <span class="cat-title">📊 Leveling & XP</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">10 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-level">
+          <div class="cmd-card cat-level" data-tags="level rank xp progress bar profile leveling">
+            <div class="cmd-top"><span class="cmd-name">-level</span><span class="cmd-args">[@user]</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Shows level, XP, prestige rank, and a visual progress bar. Alias: -rank</div>
+            <div class="cmd-example">-level @SomeUser</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="leaderboard top ranking server leveling">
+            <div class="cmd-top"><span class="cmd-name">-leaderboard</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Shows the top 10 most active users on the server sorted by level and XP.</div>
+            <div class="cmd-example">-leaderboard</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="setxp set xp admin force leveling">
+            <div class="cmd-top"><span class="cmd-name">-setxp</span><span class="cmd-args">@user &lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Forces a user's XP to an exact amount. Their level auto-calculates from the new value.</div>
+            <div class="cmd-example">-setxp @User 5000</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="addxp add xp admin bonus leveling">
+            <div class="cmd-top"><span class="cmd-name">-addxp</span><span class="cmd-args">@user &lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Adds XP on top of what a user already has. Great for rewarding events.</div>
+            <div class="cmd-example">-addxp @User 1000</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="resetlevel reset wipe clear level leveling">
+            <div class="cmd-top"><span class="cmd-name">-resetlevel</span><span class="cmd-args">@user</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Completely resets a user's XP, level, and prestige back to zero.</div>
+            <div class="cmd-example">-resetlevel @User</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="setlevelrole role reward level milestone leveling">
+            <div class="cmd-top"><span class="cmd-name">-setlevelrole</span><span class="cmd-args">&lt;level&gt; @role [coins]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Assigns a role (and optional coin reward) when users hit a specific level milestone.</div>
+            <div class="cmd-example">-setlevelrole 10 @Regular 500</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="setxpmultiplier xp multiplier channel role boost leveling">
+            <div class="cmd-top"><span class="cmd-name">-setxpmultiplier</span><span class="cmd-args">@role or #channel &lt;mult&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets XP multiplier for a role or channel. Use 0 to disable XP earning in a channel.</div>
+            <div class="cmd-example">-setxpmultiplier #spam 0</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="eventxp event xp weekend boost double leveling">
+            <div class="cmd-top"><span class="cmd-name">-eventxp</span><span class="cmd-args">&lt;mult&gt; &lt;hours&gt; [label]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Starts a server-wide XP boost event for a set duration. Perfect for Double XP Weekends.</div>
+            <div class="cmd-example">-eventxp 2 48 Double XP Weekend</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="setmaxlevel max level cap ceiling leveling">
+            <div class="cmd-top"><span class="cmd-name">-setmaxlevel</span><span class="cmd-args">&lt;level&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the maximum level cap. Reaching it triggers the prestige system (XP resets, prestige count increases).</div>
+            <div class="cmd-example">-setmaxlevel 100</div>
+          </div>
+          <div class="cmd-card cat-level" data-tags="setprestigerole prestige role reward leveling">
+            <div class="cmd-top"><span class="cmd-name">-setprestigerole</span><span class="cmd-args">@role</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the role awarded when a user hits max level and prestiges.</div>
+            <div class="cmd-example">-setprestigerole @Prestige</div>
+          </div>
+        </div>
+
+        <!-- ECONOMY -->
+        <div class="cat-header" data-cat="eco">
+          <span class="cat-title">💰 Economy</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">19 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-eco">
+          <div class="cmd-card cat-eco" data-tags="balance bal wallet bank net worth eco">
+            <div class="cmd-top"><span class="cmd-name">-balance</span><span class="cmd-args">[@user]</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Shows wallet, bank balance, and total net worth. Alias: -bal</div>
+            <div class="cmd-example">-balance @User</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="daily reward free 24h claim eco">
+            <div class="cmd-top"><span class="cmd-name">-daily</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Claim 500 free coins every 24 hours. Shows remaining cooldown if already claimed.</div>
+            <div class="cmd-example">-daily</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="weekly reward free 7 days claim eco">
+            <div class="cmd-top"><span class="cmd-name">-weekly</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Claim 2,500 free coins once per week.</div>
+            <div class="cmd-example">-weekly</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="work job earn coins 1hr eco">
+            <div class="cmd-top"><span class="cmd-name">-work</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Work a random job for 100–500 coins. 1 hour cooldown between uses.</div>
+            <div class="cmd-example">-work</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="crime risk earn reward 2hr eco">
+            <div class="cmd-top"><span class="cmd-name">-crime</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">60% chance to earn 300–1000 coins. 40% chance to get caught and be fined. 2hr cooldown.</div>
+            <div class="cmd-example">-crime</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="beg small coins 5min eco">
+            <div class="cmd-top"><span class="cmd-name">-beg</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">60% chance to receive 1–100 coins from a stranger. 5 minute cooldown.</div>
+            <div class="cmd-example">-beg</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="search find coins location random 10min eco">
+            <div class="cmd-top"><span class="cmd-name">-search</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Search a random location for 0–200 coins. 10 minute cooldown.</div>
+            <div class="cmd-example">-search</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="deposit bank save coins eco">
+            <div class="cmd-top"><span class="cmd-name">-deposit</span><span class="cmd-args">&lt;amount / all&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Move coins from wallet to bank. Bank is protected from robberies.</div>
+            <div class="cmd-example">-deposit all</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="withdraw bank take coins eco">
+            <div class="cmd-top"><span class="cmd-name">-withdraw</span><span class="cmd-args">&lt;amount / all&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Move coins from bank back into your wallet.</div>
+            <div class="cmd-example">-withdraw 500</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="pay send transfer coins tax eco">
+            <div class="cmd-top"><span class="cmd-name">-pay</span><span class="cmd-args">@user &lt;amount&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Send coins to another user. A server tax % (default 5%) is deducted automatically.</div>
+            <div class="cmd-example">-pay @Friend 1000</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="rob steal coins risk wallet eco">
+            <div class="cmd-top"><span class="cmd-name">-rob</span><span class="cmd-args">@user</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">45% chance to steal 50–500 coins from wallet. 55% chance you get caught and fined instead.</div>
+            <div class="cmd-example">-rob @RichUser</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="richlist rich leaderboard top wealth eco">
+            <div class="cmd-top"><span class="cmd-name">-richlist</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Top 10 richest users on the server by total net worth (wallet + bank).</div>
+            <div class="cmd-example">-richlist</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="shop browse items roles price eco">
+            <div class="cmd-top"><span class="cmd-name">-shop</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Browse all available items and roles for purchase with prices and level requirements.</div>
+            <div class="cmd-example">-shop</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="buy purchase item id shop eco">
+            <div class="cmd-top"><span class="cmd-name">-buy</span><span class="cmd-args">&lt;item_id&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Purchase an item from the shop by its ID number. Roles are auto-assigned on purchase.</div>
+            <div class="cmd-example">-buy 3</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="stocks market view prices eco">
+            <div class="cmd-top"><span class="cmd-name">-stocks</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">View all server stocks with current prices and percentage change (auto-updates every 5 min).</div>
+            <div class="cmd-example">-stocks</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="buystock buy shares invest symbol eco">
+            <div class="cmd-top"><span class="cmd-name">-buystock</span><span class="cmd-args">&lt;SYMBOL&gt; &lt;qty&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Buy shares of a stock. Prices fluctuate automatically every 5 minutes.</div>
+            <div class="cmd-example">-buystock GAME 10</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="sellstock sell shares profit eco">
+            <div class="cmd-top"><span class="cmd-name">-sellstock</span><span class="cmd-args">&lt;SYMBOL&gt; &lt;qty&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Sell your shares at the current market price to realize profit or cut losses.</div>
+            <div class="cmd-example">-sellstock GAME 5</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="lottery jackpot info view eco">
+            <div class="cmd-top"><span class="cmd-name">-lottery</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">View the current lottery jackpot and countdown to the next weekly draw.</div>
+            <div class="cmd-example">-lottery</div>
+          </div>
+          <div class="cmd-card cat-eco" data-tags="buylottery ticket buy enter win eco">
+            <div class="cmd-top"><span class="cmd-name">-buylottery</span><span class="cmd-args">[tickets]</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Buy lottery tickets at 100 coins each. More tickets = better odds. Draw happens weekly.</div>
+            <div class="cmd-example">-buylottery 5</div>
+          </div>
+        </div>
+
+        <!-- GAMBLING -->
+        <div class="cat-header" data-cat="gamble">
+          <span class="cat-title">🎰 Gambling & Casino</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">12 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-gamble">
+          <div class="cmd-card cat-gamble" data-tags="coinflip flip heads tails bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-coinflip</span><span class="cmd-args">&lt;bet&gt; [heads/tails]</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Bet on heads or tails. Win ~1:1 minus house edge. Default guess is heads.</div>
+            <div class="cmd-example">-coinflip 500 tails</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="dice roll guess 1-6 5x bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-dice</span><span class="cmd-args">&lt;bet&gt; &lt;1-6&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Guess what the dice will roll (1–6). Correct guess pays 5x your bet.</div>
+            <div class="cmd-example">-dice 200 4</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="slots machine spin jackpot 50x bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-slots</span><span class="cmd-args">&lt;bet&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Spin the slot machine. Pair = 1.5x. Three of a kind up to 50x (🎰 7️⃣7️⃣7️⃣). 1% goes to jackpot pool.</div>
+            <div class="cmd-example">-slots 1000</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="blackjack 21 cards hit stand dealer bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-blackjack</span><span class="cmd-args">&lt;bet&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Interactive blackjack vs the bot. Type hit or stand after the deal. Natural blackjack pays 1.5x.</div>
+            <div class="cmd-example">-blackjack 500</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="roulette spin wheel red black number bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-roulette</span><span class="cmd-args">&lt;bet&gt; &lt;choice&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Spin the wheel. Choices: red/black/odd/even (pays 1x) or exact number 0-36 (pays 35x).</div>
+            <div class="cmd-example">-roulette 300 red</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="crash multiplier cashout rising bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-crash</span><span class="cmd-args">&lt;bet&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Multiplier rises until it crashes. Type cashout to lock in your winnings before it crashes!</div>
+            <div class="cmd-example">-crash 400</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="highlow high low card higher lower bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-highlow</span><span class="cmd-args">&lt;bet&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">See a card value, then guess if the next card is higher or lower to double your bet.</div>
+            <div class="cmd-example">-highlow 250</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="rps rock paper scissors pvp vs bet gamble">
+            <div class="cmd-top"><span class="cmd-name">-rps</span><span class="cmd-args">@user &lt;bet&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Challenge another user to Rock Paper Scissors for coins. Both secretly type their choice.</div>
+            <div class="cmd-example">-rps @Friend 500</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="scratchcard scratch instant win ticket gamble">
+            <div class="cmd-top"><span class="cmd-name">-scratchcard</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Buy a 50-coin scratch card for an instant chance to win up to 1,000 coins.</div>
+            <div class="cmd-example">-scratchcard</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="gamblehistory history log past results gamble">
+            <div class="cmd-top"><span class="cmd-name">-gamblehistory</span><span class="cmd-args">[@user]</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Shows the last 10 gambling results for you or another user with bet sizes and outcomes.</div>
+            <div class="cmd-example">-gamblehistory @User</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="selfexclude exclude ban block days gamble">
+            <div class="cmd-top"><span class="cmd-name">-selfexclude</span><span class="cmd-args">&lt;days&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Self-bans you from gambling for X days. Only a Bot Manager can remove it early.</div>
+            <div class="cmd-example">-selfexclude 7</div>
+          </div>
+          <div class="cmd-card cat-gamble" data-tags="casinostats casino stats total wager house profit gamble">
+            <div class="cmd-top"><span class="cmd-name">-casinostats</span><span class="cmd-args">—</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Shows total wagered, total paid out, and net house profit across all gambling on the server.</div>
+            <div class="cmd-example">-casinostats</div>
+          </div>
+        </div>
+
+        <!-- CINEMA -->
+        <div class="cat-header" data-cat="cinema">
+          <span class="cat-title">🎬 Cinema & Media</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">10 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-cinema">
+          <div class="cmd-card cat-cinema" data-tags="movie info search lookup tmdb cinema">
+            <div class="cmd-top"><span class="cmd-name">-movie</span><span class="cmd-args">&lt;title&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Looks up a movie on TMDB. Shows poster, plot, release date, and ratings. Requires TMDB API key.</div>
+            <div class="cmd-example">-movie Inception</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="trending popular current week movies cinema">
+            <div class="cmd-top"><span class="cmd-name">-trending</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Shows the current top 5 trending movies this week pulled from TMDB.</div>
+            <div class="cmd-example">-trending</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="watchlist view list server movies cinema">
+            <div class="cmd-top"><span class="cmd-name">-watchlist</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Displays the full server watchlist showing watched/unwatched status and vote counts.</div>
+            <div class="cmd-example">-watchlist</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="addwatchlist add suggest movie title cinema">
+            <div class="cmd-top"><span class="cmd-name">-addwatchlist</span><span class="cmd-args">&lt;title&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Adds a movie to the server watchlist (unless locked by admin).</div>
+            <div class="cmd-example">-addwatchlist The Dark Knight</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="votewatchlist vote movie id cinema">
+            <div class="cmd-top"><span class="cmd-name">-votewatchlist</span><span class="cmd-args">&lt;id&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Vote for a watchlist entry. Higher vote count movies appear at the top of the list.</div>
+            <div class="cmd-example">-votewatchlist 3</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="markwatched watched mark complete done cinema">
+            <div class="cmd-top"><span class="cmd-name">-markwatched</span><span class="cmd-args">&lt;id&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Marks a watchlist entry as watched — displayed with ✅ in the list.</div>
+            <div class="cmd-example">-markwatched 2</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="randommovie random pick choose unwatched cinema">
+            <div class="cmd-top"><span class="cmd-name">-randommovie</span><span class="cmd-args">—</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Randomly picks an unwatched movie from the server watchlist. Perfect for movie nights!</div>
+            <div class="cmd-example">-randommovie</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="reviewmovie review rate star rating cinema">
+            <div class="cmd-top"><span class="cmd-name">-reviewmovie</span><span class="cmd-args">&lt;1-5&gt; &lt;review&gt;</span><span class="cmd-perm perm-all">All</span></div>
+            <div class="cmd-desc">Submit a 1–5 star rating and written review for a movie.</div>
+            <div class="cmd-example">-reviewmovie 5 Absolute masterpiece!</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="createwatchparty watch party event schedule rsvp cinema">
+            <div class="cmd-top"><span class="cmd-name">-createwatchparty</span><span class="cmd-args">&lt;title&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Creates a watch party event. Members RSVP by reacting ✅. Bot sends a reminder when it starts.</div>
+            <div class="cmd-example">-createwatchparty Avengers Endgame Night</div>
+          </div>
+          <div class="cmd-card cat-cinema" data-tags="setcinema cinema channel announcements cinema">
+            <div class="cmd-top"><span class="cmd-name">-setcinema</span><span class="cmd-args">#channel</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the designated cinema announcements channel for watch party notifications.</div>
+            <div class="cmd-example">-setcinema #movie-nights</div>
+          </div>
+        </div>
+
+        <!-- ADMIN -->
+        <div class="cat-header" data-cat="admin">
+          <span class="cat-title">🛡️ Admin & Configuration</span>
+          <div class="cat-line"></div>
+          <span class="cat-count">20 commands</span>
+        </div>
+        <div class="cmd-grid" id="grid-admin">
+          <div class="cmd-card cat-admin" data-tags="setprefix prefix change symbol admin">
+            <div class="cmd-top"><span class="cmd-name">-setprefix</span><span class="cmd-args">&lt;prefix&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Changes the bot's command prefix. Default is -. Any single character works.</div>
+            <div class="cmd-example">-setprefix !</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="setbotmanager botmanager role permission admin">
+            <div class="cmd-top"><span class="cmd-name">-setbotmanager</span><span class="cmd-args">@role</span><span class="cmd-perm perm-admin">Admin</span></div>
+            <div class="cmd-desc">Designates which role has access to all bot manager commands. Run this first as server owner.</div>
+            <div class="cmd-example">-setbotmanager @BotAdmin</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="togglemodule toggle module enable disable admin">
+            <div class="cmd-top"><span class="cmd-name">-togglemodule</span><span class="cmd-args">&lt;module&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Enable or disable entire modules: economy, leveling, casino, cinema. No data is deleted.</div>
+            <div class="cmd-example">-togglemodule casino</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="setcurrency currency symbol name coins admin">
+            <div class="cmd-top"><span class="cmd-name">-setcurrency</span><span class="cmd-args">&lt;symbol&gt; [name]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Customize server currency. E.g. change it to 💵 Dollars or 🎟️ Tickets.</div>
+            <div class="cmd-example">-setcurrency 🎬 Credits</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="settax tax rate transfer percentage admin">
+            <div class="cmd-top"><span class="cmd-name">-settax</span><span class="cmd-args">&lt;percent&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the tax percentage deducted from all -pay transfers. Default is 5%.</div>
+            <div class="cmd-example">-settax 10</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="setstartbalance starting balance new users admin">
+            <div class="cmd-top"><span class="cmd-name">-setstartbalance</span><span class="cmd-args">&lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets how many coins new users start with when they first use the economy.</div>
+            <div class="cmd-example">-setstartbalance 1000</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="admingive give coins add mint admin">
+            <div class="cmd-top"><span class="cmd-name">-admingive</span><span class="cmd-args">@user &lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Directly gives coins to a user's wallet. Mints new currency into the economy.</div>
+            <div class="cmd-example">-admingive @User 5000</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="admintake take remove coins destroy admin">
+            <div class="cmd-top"><span class="cmd-name">-admintake</span><span class="cmd-args">@user &lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Removes coins from a user's wallet. Destroys currency from the economy.</div>
+            <div class="cmd-example">-admintake @User 1000</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="fine deduct coins penalty mod reason admin">
+            <div class="cmd-top"><span class="cmd-name">-fine</span><span class="cmd-args">@user &lt;amount&gt; [reason]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Deducts coins from a user as a moderation penalty with optional reason.</div>
+            <div class="cmd-example">-fine @User 500 Breaking economy rules</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="reseteconomy reset economy server wipe admin">
+            <div class="cmd-top"><span class="cmd-name">-reseteconomy</span><span class="cmd-args">—</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">⚠️ Resets ALL users' wallets to starting balance. This is irreversible — use with extreme caution.</div>
+            <div class="cmd-example">-reseteconomy</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="resetusereco reset user economy individual admin">
+            <div class="cmd-top"><span class="cmd-name">-resetusereco</span><span class="cmd-args">@user</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Resets one specific user's wallet and bank to the server's starting balance.</div>
+            <div class="cmd-example">-resetusereco @Cheater</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="setmaxbet max bet casino limit admin">
+            <div class="cmd-top"><span class="cmd-name">-setmaxbet</span><span class="cmd-args">&lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the maximum coins allowed in any single gambling wager.</div>
+            <div class="cmd-example">-setmaxbet 5000</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="setminbet min bet casino limit admin">
+            <div class="cmd-top"><span class="cmd-name">-setminbet</span><span class="cmd-args">&lt;amount&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the minimum coins required to place a gambling bet.</div>
+            <div class="cmd-example">-setminbet 50</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="sethouseedge house edge percentage casino admin">
+            <div class="cmd-top"><span class="cmd-name">-sethouseedge</span><span class="cmd-args">&lt;percent&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Sets the house edge % taken from gambling winnings. Default 5% keeps the casino profitable.</div>
+            <div class="cmd-example">-sethouseedge 3</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="addshopitem shop item add price admin">
+            <div class="cmd-top"><span class="cmd-name">-addshopitem</span><span class="cmd-args">"name" &lt;price&gt; [desc]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Adds a generic item to the shop with a name, price, and optional description.</div>
+            <div class="cmd-example">-addshopitem "VIP Badge" 10000 Exclusive badge</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="addroleshop role shop add price level admin">
+            <div class="cmd-top"><span class="cmd-name">-addroleshop</span><span class="cmd-args">@role &lt;price&gt; [lvl] [max]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Lists a Discord role for sale in the shop with optional level requirement and global purchase cap.</div>
+            <div class="cmd-example">-addroleshop @VIP 5000 10 100</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="addstock stock market add symbol admin">
+            <div class="cmd-top"><span class="cmd-name">-addstock</span><span class="cmd-args">&lt;SYMBOL&gt; [price]</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Adds a stock ticker to the server market. Price fluctuates automatically every 5 minutes.</div>
+            <div class="cmd-example">-addstock FILM 100</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="settmdb tmdb api key cinema movie admin">
+            <div class="cmd-top"><span class="cmd-name">-settmdb</span><span class="cmd-args">&lt;api_key&gt;</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Saves the TMDB API key for movie commands. Automatically clears the movie cache.</div>
+            <div class="cmd-example">-settmdb your_api_key_here</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="manageexclusion exclusion gambling ban manage admin">
+            <div class="cmd-top"><span class="cmd-name">-manageexclusion</span><span class="cmd-args">&lt;add/remove&gt; @user</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Manually add or remove a user from the gambling exclusion list. Can override self-exclusions.</div>
+            <div class="cmd-example">-manageexclusion remove @User</div>
+          </div>
+          <div class="cmd-card cat-admin" data-tags="botstats bot stats servers users latency admin">
+            <div class="cmd-top"><span class="cmd-name">-botstats</span><span class="cmd-args">—</span><span class="cmd-perm perm-mgr">Manager</span></div>
+            <div class="cmd-desc">Shows the bot's server count, total tracked users, and current API latency.</div>
+            <div class="cmd-example">-botstats</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CREDENTIALS PAGE ── -->
+      <div class="page-section" id="page-credentials">
+        <div class="section-header">
+          <div>
+            <h2>Admin Credentials</h2>
+            <p>// 10 authorized admin accounts — keep these confidential</p>
+          </div>
+        </div>
+
+        <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px 18px;margin-bottom:24px;font-size:0.83rem;color:#fde68a;font-family:'JetBrains Mono',monospace;">
+          ⚠️ CONFIDENTIAL — These credentials provide full access to the bot admin panel. Do not share.
+        </div>
+
+        <div class="creds-grid" id="credsGrid"></div>
+      </div>
+
+      <!-- ── SETUP PAGE ── -->
+      <div class="page-section" id="page-setup">
+        <div class="section-header">
+          <div>
+            <h2>Setup Guide</h2>
+            <p>// First-time configuration walkthrough</p>
+          </div>
+        </div>
+
+        <div class="setup-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Install Dependencies</h3>
+            <p>Run this command in your terminal or hosting panel's console before starting the bot.</p>
+            <div class="code-block">pip install discord.py aiosqlite aiohttp python-dotenv</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Get Discord Bot Token</h3>
+            <p>Go to discord.com/developers/applications → New Application → Bot → Reset Token. Enable ALL 3 Privileged Gateway Intents (Presence, Server Members, Message Content).</p>
+            <div class="code-block">TOKEN = "your_token_here"  # Already set in bot.py</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Get TMDB API Key (Free)</h3>
+            <p>Sign up at themoviedb.org → Settings → API → Create → Developer. Paste your key using the command below.</p>
+            <div class="code-block">-settmdb your_tmdb_api_key_here</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Invite Bot to Server</h3>
+            <p>In Developer Portal: OAuth2 → URL Generator → Check "bot" and "applications.commands" → Bot Permissions: Administrator → Copy URL and open in browser.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h3>First Commands (Run as Server Owner)</h3>
+            <p>Run these in order after the bot comes online. This unlocks all admin features for your team.</p>
+            <div class="code-block">-setbotmanager @YourAdminRole
+-setlogchannel #logs
+-setmodlogchannel #mod-logs
+-setwelcome #welcome Welcome {user} to {server}!
+-setautorole @Member
+-setcurrency 🎬 Credits
+-settmdb your_tmdb_key</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <h3>Start Using the Bot</h3>
+            <p>The bot is now ready! All commands use the <span style="color:#60a5fa;font-family:'JetBrains Mono',monospace">-</span> prefix. Type <strong>-help</strong> in Discord anytime for a quick reference.</p>
+            <div class="code-block">-help          # Quick command overview
+-level         # Check your level
+-balance       # Check your balance
+-daily         # Claim daily reward</div>
+          </div>
+        </div>
+
+        <div class="cat-header" style="margin-top:32px">
+          <span class="cat-title">⚡ Automod Configuration (Optional)</span>
+          <div class="cat-line"></div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num" style="background:linear-gradient(135deg,var(--orange),var(--red))">A</div>
+          <div class="step-content">
+            <h3>Set Up Automod Thresholds</h3>
+            <p>Configure automatic punishments based on violation points accumulated from breaking filters.</p>
+            <div class="code-block">-setautomodthreshold 3 mute    # 3 points = 1hr mute
+-setautomodthreshold 8 kick    # 8 points = kick
+-setautomodthreshold 15 ban    # 15 points = ban
+-addprofanity badword          # Add blocked words
+-blockdomain sketchy.com       # Block domains
+-allowdomain youtube.com       # Whitelist domains</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num" style="background:linear-gradient(135deg,var(--gold),var(--orange))">B</div>
+          <div class="step-content">
+            <h3>Set Up Economy & Shop</h3>
+            <p>Customize the economy and populate the shop with purchasable roles and items.</p>
+            <div class="code-block">-setstartbalance 1000          # New user starting coins
+-settax 5                      # Transfer tax %
+-addroleshop @VIP 10000 5      # Role costs 10k, needs lvl 5
+-addstock FILM 100             # Add a stock ticker
+-setmaxbet 5000                # Casino max bet</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end layout -->
+</div><!-- end mainPanel -->
+
+<script>
+// ══════════════════════════════
+//  CREDENTIALS DATABASE
+// ══════════════════════════════
+const ADMINS = [
+  { user: "cc_owner",      pass: "Cinema#2025!",     role: "Owner",          access: ["All Modules", "Full Access", "Credentials"] },
+  { user: "cinema_admin",  pass: "Crusade@Film99",   role: "Head Admin",     access: ["Moderation", "Economy", "Casino", "Cinema"] },
+  { user: "moderator_x",   pass: "ModX$ecure47",     role: "Senior Mod",     access: ["Moderation", "Automod", "Leveling"] },
+  { user: "bot_manager1",  pass: "BotMgr!2025",      role: "Bot Manager",    access: ["Economy", "Shop", "Stocks", "Lottery"] },
+  { user: "film_curator",  pass: "FilmC@2025#",      role: "Cinema Manager", access: ["Cinema", "Watchlist", "Watch Parties"] },
+  { user: "eco_admin",     pass: "Ec0n0my!55",       role: "Economy Admin",  access: ["Economy", "Casino", "Shop"] },
+  { user: "event_host",    pass: "Ev3nt$Host@9",     role: "Event Manager",  access: ["Events", "XP Boost", "Cinema"] },
+  { user: "support_team",  pass: "Supp0rt#CC25",     role: "Support",        access: ["Moderation", "Warnings", "Userinfo"] },
+  { user: "level_mod",     pass: "L3vel!Mgr@7",      role: "Level Moderator",access: ["Leveling", "XP Admin", "Leaderboard"] },
+  { user: "casino_host",   pass: "C@sin0Host#8",     role: "Casino Host",    access: ["Casino", "Gambling Stats", "Exclusions"] },
+];
+
+// ══════════════════════════════
+//  LOGIN LOGIC
+// ══════════════════════════════
+let currentUser = null;
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+
+  const match = ADMINS.find(a => a.user === u && a.pass === p);
+  if (!match) {
+    err.style.display = 'block';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+    setTimeout(() => err.style.display = 'none', 3000);
+    return;
+  }
+
+  currentUser = match;
+  err.style.display = 'none';
+
+  // Hide login, show panel
+  const loginScreen = document.getElementById('loginScreen');
+  loginScreen.classList.add('hiding');
+  setTimeout(() => {
+    loginScreen.style.display = 'none';
+    const panel = document.getElementById('mainPanel');
+    panel.style.display = 'block';
+    document.getElementById('adminBadge').textContent = match.user;
+    buildCredentials();
+    // stagger card animations
+    document.querySelectorAll('.cmd-card').forEach((c, i) => {
+      c.style.animationDelay = (i * 0.02) + 's';
+    });
+  }, 600);
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('mainPanel').style.display = 'none';
+  const loginScreen = document.getElementById('loginScreen');
+  loginScreen.style.display = 'flex';
+  loginScreen.classList.remove('hiding');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const ls = document.getElementById('loginScreen');
+    if (ls.style.display !== 'none' && !ls.classList.contains('hiding')) {
+      doLogin();
+    }
+  }
+});
+
+// ══════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════
+function showPage(id, el) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('searchBox').value = '';
+  showAllCards();
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════════
+//  CATEGORY FILTER
+// ══════════════════════════════
+function filterCat(cat) {
+  showAllCards();
+  document.querySelectorAll('.cat-header').forEach(h => {
+    if (h.dataset.cat && h.dataset.cat !== cat) {
+      let el = h;
+      while (el && !el.classList.contains('cmd-grid')) {
+        el = el.nextElementSibling;
+        if (el && el.classList.contains('cmd-grid') && el.id && !el.id.includes(cat)) {
+          el.style.display = 'none';
+        }
+      }
+    }
+  });
+  // Scroll to the right grid
+  const grid = document.getElementById('grid-' + cat);
+  if (grid) setTimeout(() => grid.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function showAllCards() {
+  document.querySelectorAll('.cmd-grid').forEach(g => g.style.display = '');
+  document.querySelectorAll('.cmd-card').forEach(c => c.style.display = '');
+  document.querySelectorAll('.cat-header').forEach(h => h.style.display = '');
+  document.getElementById('noResults').style.display = 'none';
+}
+
+// ══════════════════════════════
+//  SEARCH
+// ══════════════════════════════
+function doSearch() {
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  if (!q) { showAllCards(); return; }
+
+  // Switch to commands page if not there
+  if (!document.getElementById('page-commands').classList.contains('active')) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-commands').classList.add('active');
+  }
+
+  let found = 0;
+  document.querySelectorAll('.cmd-card').forEach(card => {
+    const text = (card.dataset.tags + ' ' + card.textContent).toLowerCase();
+    const match = text.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) found++;
+  });
+
+  // Hide empty grids and their headers
+  document.querySelectorAll('.cmd-grid').forEach(grid => {
+    const visible = [...grid.querySelectorAll('.cmd-card')].some(c => c.style.display !== 'none');
+    grid.style.display = visible ? '' : 'none';
+  });
+
+  document.querySelectorAll('.cat-header').forEach(h => {
+    let next = h.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.classList.contains('cat-header')) {
+      if (next.classList.contains('cmd-grid') && next.style.display !== 'none') hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    h.style.display = hasVisible ? '' : 'none';
+  });
+
+  document.getElementById('noResults').style.display = found === 0 ? 'block' : 'none';
+}
+
+// ══════════════════════════════
+//  BUILD CREDENTIALS PAGE
+// ══════════════════════════════
+function buildCredentials() {
+  const grid = document.getElementById('credsGrid');
+  grid.innerHTML = '';
+
+  // Show full credentials only to owner, partial to others
+  const isOwner = currentUser.role === 'Owner';
+
+  ADMINS.forEach((a, i) => {
+    const passDisplay = isOwner ? a.pass : (a.user === currentUser.user ? a.pass : '••••••••••••');
+    const card = document.createElement('div');
+    card.className = 'cred-card';
+    card.style.animationDelay = (i * 0.05) + 's';
+    card.style.animation = 'fadeUp 0.4s ease both';
+    card.innerHTML = `
+      <div class="cred-role">${a.role}</div>
+      <div class="cred-username">@${a.user}</div>
+      <div class="cred-pass">${passDisplay}</div>
+      <div class="cred-access">
+        ${a.access.map(t => `<span class="cred-tag">${t}</span>`).join('')}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Add note if not owner
+  if (!isOwner) {
+    const note = document.createElement('div');
+    note.style.cssText = 'grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:0.8rem;font-family:JetBrains Mono,monospace;';
+    note.textContent = '🔒 Other accounts\' passwords hidden. Log in as cc_owner to view all.';
+    grid.appendChild(note);
+  }
+}
+</script>
+</body>
+</html>
